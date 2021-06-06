@@ -1,28 +1,36 @@
-import { useEffect, useState } from "react";
-import Status from "./components/Status";
+import {useEffect, useState} from "react";
+
+import Theme from "./contexts/theme";
+import User from "./contexts/user";
+
+import store from "./store/store";
+import {Provider, useSelector} from "react-redux";
+import TrainingApp from "./TrainingApp";
 
 // Componente principal de la aplicación.
 const App = () => {
-  const [status, setStatus] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [tema, setTema] = useState("rosa");
+  const [token, setToken] = useState("");
 
-  // Cargamos el estado del servidor
+  // Cargamos el token de localStorage
   useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status === "ok"))
-      .finally(() => setLoading(false));
+    const tokenLocalStorage = window.localStorage.getItem("token");
+    if (tokenLocalStorage) {
+      setToken(tokenLocalStorage);
+    }
   }, []);
 
   // Mostramos la aplicación
   return (
-    <main>
-      <h1>Curso de React de TrainingIT</h1>
-      <p>
-        Estado del servidor:
-        {loading ? " Cargando..." : <Status status={status} />}
-      </p>
-    </main>
+    <>
+      <Provider store={store}>
+        <User.Provider value={{token: token, update: setToken}}>
+          <Theme.Provider value={{current: tema, update: setTema}}>
+            <TrainingApp />
+          </Theme.Provider>
+        </User.Provider>
+      </Provider>
+    </>
   );
 };
 

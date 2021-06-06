@@ -1,5 +1,5 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const { resolve } = require("path");
+const {resolve} = require("path");
 
 /**
  * Configuración para compilar el cliente de la práctica final
